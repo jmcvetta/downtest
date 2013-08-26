@@ -27,16 +27,31 @@ type results struct {
 	Importers []pkgResult
 }
 
+var usage = func() {
+	prog := os.Args[0]
+	fmt.Fprintf(os.Stderr, "Usage of %s:\n", prog)
+	fmt.Fprintf(os.Stderr, "%s [options] import_path\n", prog)
+	fmt.Fprintf(os.Stderr, "  (where import_path is the full import path of a Go package)\n")
+	flag.PrintDefaults()
+}
+
 func main() {
 	log.SetFlags(log.Lshortfile)
-	verbose := flag.Bool("v", false, "Verbose")
-	jsonOutput := flag.Bool("j", false, "JSON output")
-	update := flag.Bool("u", true, "Update on go get")
+	//
+	// Command line flags
+	//
+	flag.Usage = usage
+	verbose := *flag.Bool("v", false, "Verbose")
+	jsonOutput := *flag.Bool("j", false, "JSON output")
+	update := *flag.Bool("u", true, "Update on go get")
 	flag.Parse()
 	if flag.NArg() != 1 {
 		fmt.Fprintln(os.Stderr, "Must specify an import path as an argument.")
 		os.Exit(-1)
 	}
+	//
+	// Run the tests
+	//
 	p, err := downtest.NewPackage(flag.Args()[0])
 	if err != nil {
 		log.Fatal(err)
@@ -45,12 +60,15 @@ func main() {
 		fmt.Printf("Package %s is not imported by any known package.\n", p.ImportPath)
 		os.Exit(0)
 	}
-	p.Verbose = *verbose
-	p.Update = *update
+	p.Verbose = verbose
+	p.Update = update
 	err = p.RunTests()
 	if err != nil {
 		log.Fatal(err)
 	}
+	//
+	// Generate output
+	//
 	total := len(p.Passed)
 	fail := 0
 	for _, pass := range p.Passed {
@@ -58,7 +76,7 @@ func main() {
 			fail++
 		}
 	}
-	if *jsonOutput {
+	if jsonOutput {
 		rs := results{
 			Package:   p.ImportPath,
 			Timestamp: time.Now(),
@@ -77,8 +95,10 @@ func main() {
 		fmt.Println(string(b))
 
 	} else {
-		fmt.Println()
-		fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+		if verbose {
+			fmt.Println()
+			fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+		}
 		fmt.Println()
 		fmt.Printf("Passed %d / %d downstream tests:\n", total-fail, total)
 		fmt.Println()
