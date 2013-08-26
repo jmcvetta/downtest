@@ -55,4 +55,7 @@ func main() {
 		}
 		fmt.Printf("%s  %s\n", status, pkg)
 	}
+	if fail != 0 {
+		os.Exit(1)
+	}
 }
