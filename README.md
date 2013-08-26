@@ -14,8 +14,25 @@ Early development.  Works okay.  Needs tests.
 
 ```bash
 $ go get github.com/jmcvetta/downtest/downtest
-$ downtest github.com/username/package # Import path of a Go package
+$ downtest github.com/jmcvetta/restclient # Import path of any Go package
+
+Passed 6 / 8 downstream tests:
+
+pass  github.com/apeacox/txtatus-cli
+FAIL  github.com/jmcvetta/heroku
+pass  github.com/jmcvetta/neo4j
+pass  github.com/jmcvetta/neoism
+pass  github.com/jmcvetta/srom/srom
+FAIL  github.com/jmcvetta/stormpath
+pass  github.com/mostafah/mandrill
+pass  github.com/postmaster/postmaster-go
+
 ```
+
+`downtest` knows nothing about the test requirements of downstream packages.
+In the example above some tests are failing because they require an environment
+variable to be set.  You may need to setup the environment, databases, etc
+before running `downtest`.
 
 
 ## Documentation
