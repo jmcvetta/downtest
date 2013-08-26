@@ -8,8 +8,10 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/jmcvetta/downtest"
 	"log"
+	"sort"
 )
 
 func main() {
@@ -22,13 +24,30 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println(p)
-	log.Println(p.RunTests())
-	/*	is, err := p.Importers()
-		if err != nil {
-			log.Fatal(err)
+	err = p.RunTests()
+	if err != nil {
+		log.Fatal(err)
+	}
+	total := len(p.Passed)
+	fail := 0
+	for _, pass := range p.Passed {
+		if !pass {
+			fail++
 		}
-		for _, path := range is {
-			fmt.Println(path)
-		}*/
+	}
+	fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+	fmt.Println()
+	fmt.Printf("Passed %d / %d downstream tests.\n", total-fail, total)
+	fmt.Println()
+	packages := p.Importers
+	sort.Strings(packages)
+	for _, pkg := range packages {
+		var status string
+		if p.Passed[pkg] {
+			status = "pass"
+		} else {
+			status = "FAIL"
+		}
+		fmt.Printf("%s \t %s\n", pkg, status)
+	}
 }

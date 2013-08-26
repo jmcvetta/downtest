@@ -7,12 +7,11 @@
 package downtest
 
 import (
-	// vcs "github.com/sourcegraph/go-vcs"
+	"fmt"
 	"github.com/jmcvetta/restclient"
-	deps "github.com/sourcegraph/go-deps"
 	"io/ioutil"
-	"log"
 	"os"
+	"os/exec"
 )
 
 var apiUrl = "http://api.godoc.org/importers/"
@@ -35,7 +34,7 @@ type Package struct {
 	ImportPath string
 	Tmpdir     string
 	Importers  []string
-	context    deps.Context
+	Passed     map[string]bool
 }
 
 // NewPackage prepares a package for downstream testing by looking up its
@@ -48,14 +47,13 @@ func NewPackage(importPath string) (*Package, error) {
 	if err != nil {
 		return nil, err
 	}
-	// defer os.RemoveAll(dirName)
+	defer os.RemoveAll(dirName)
 	p.Tmpdir = dirName
-	p.context = deps.Default
-	p.context.GOPATH = p.Tmpdir
 	err = p.LookupImporters()
 	if err != nil {
 		return &p, err
 	}
+	p.Passed = make(map[string]bool, len(p.Importers))
 	return &p, nil
 }
 
@@ -85,13 +83,30 @@ func (p *Package) LookupImporters() error {
 }
 
 func (p *Package) RunTests() error {
-	log.Println(p.Tmpdir)
 	os.Setenv("GOPATH", p.Tmpdir)
 	for _, pkg := range p.Importers {
-		err := p.context.GoGet(pkg, deps.Verbose)
+		p.Passed[pkg] = false
+		fmt.Println("+++ Running tests for", pkg, "+++")
+		fmt.Println()
+		fmt.Println("> go get -v", pkg)
+		fmt.Println()
+		c := exec.Command("go", "get", "-v", pkg)
+		c.Stderr = os.Stderr
+		c.Stdout = os.Stdout
+		err := c.Run()
 		if err != nil {
-			return err
+			continue
 		}
+		fmt.Println("> go test -v", pkg)
+		fmt.Println()
+		c = exec.Command("go", "test", "-v", pkg)
+		c.Stderr = os.Stderr
+		c.Stdout = os.Stdout
+		err = c.Run()
+		if err != nil {
+			continue
+		}
+		p.Passed[pkg] = true
 	}
 	return nil
 }
