@@ -35,6 +35,7 @@ type Package struct {
 	Importers  []string
 	Passed     map[string]bool
 	Verbose    bool
+	Update     bool
 }
 
 // NewPackage prepares a package for downstream testing by looking up its
@@ -48,6 +49,7 @@ func NewPackage(importPath string) (*Package, error) {
 		return &p, err
 	}
 	p.Passed = make(map[string]bool, len(p.Importers))
+	p.Update = true
 	return &p, nil
 }
 
@@ -81,7 +83,12 @@ func (p *Package) LookupImporters() error {
 func (p *Package) RunTests() error {
 	for _, pkg := range p.Importers {
 		p.Passed[pkg] = false
-		c := exec.Command("go", "get", "-u", "-v", pkg)
+		var c *exec.Cmd
+		if p.Update {
+			c = exec.Command("go", "get", "-u", "-v", pkg)
+		} else {
+			c = exec.Command("go", "get", "-v", pkg)
+		}
 		if p.Verbose {
 			fmt.Fprintln(os.Stderr, "+++ Running tests for", pkg, "+++")
 			fmt.Fprintln(os.Stderr)

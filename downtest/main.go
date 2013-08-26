@@ -31,6 +31,7 @@ func main() {
 	log.SetFlags(log.Lshortfile)
 	verbose := flag.Bool("v", false, "Verbose")
 	jsonOutput := flag.Bool("j", false, "JSON output")
+	update := flag.Bool("u", true, "Update on go get")
 	flag.Parse()
 	if flag.NArg() != 1 {
 		fmt.Fprintln(os.Stderr, "Must specify an import path as an argument.")
@@ -45,6 +46,7 @@ func main() {
 		os.Exit(0)
 	}
 	p.Verbose = *verbose
+	p.Update = *update
 	err = p.RunTests()
 	if err != nil {
 		log.Fatal(err)
