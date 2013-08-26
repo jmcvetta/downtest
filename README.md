@@ -1,7 +1,8 @@
 downtest
 ========
 
-Run tests for the downstream consumers of a Golang package
+Run tests for the known downstream consumers of a [Go](http://golang.org) package.
+
 
 # Status
 
@@ -12,6 +13,6 @@ Early development.  Works okay.
 
 ```bash
 $ go get github.com/jmcvetta/downtest/downtest
-$ downtest github.com/username/package
+$ downtest github.com/username/package # Import path of a Go package
 ```
 
