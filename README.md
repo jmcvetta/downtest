@@ -26,7 +26,6 @@ pass  github.com/jmcvetta/srom/srom
 FAIL  github.com/jmcvetta/stormpath
 pass  github.com/mostafah/mandrill
 pass  github.com/postmaster/postmaster-go
-
 ```
 
 `downtest` knows nothing about the test requirements of downstream packages.
@@ -53,7 +52,7 @@ Usage of downtest:
 downtest [options] import_path
   (where import_path is the full import path of a Go package)
   -j=false: JSON output
-  -u=true: Update on go get
+  -u=true: Update packages with "go get -u"
   -v=false: Verbose
 ```
 

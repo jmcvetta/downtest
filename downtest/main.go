@@ -43,7 +43,7 @@ func main() {
 	flag.Usage = usage
 	verbose := *flag.Bool("v", false, "Verbose")
 	jsonOutput := *flag.Bool("j", false, "JSON output")
-	update := *flag.Bool("u", true, "Update on go get")
+	update := *flag.Bool("u", true, `Update packages with "go get -u"`)
 	flag.Parse()
 	if flag.NArg() != 1 {
 		fmt.Fprintln(os.Stderr, "Must specify an import path as an argument.")
