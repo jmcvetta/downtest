@@ -2,6 +2,8 @@
 // terms of the GPL v3.  See http://www.gnu.org/copyleft/gpl.html for details.
 // Resist intellectual serfdom - the ownership of ideas is akin to slavery.
 
+// Package downtest runs the tests on all downstream consumers of a package,
+// as known to GoDoc.org.
 package downtest
 
 import (
