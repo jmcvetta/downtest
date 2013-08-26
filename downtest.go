@@ -35,6 +35,7 @@ type Package struct {
 	Tmpdir     string
 	Importers  []string
 	Passed     map[string]bool
+	Verbose    bool
 }
 
 // NewPackage prepares a package for downstream testing by looking up its
@@ -86,22 +87,27 @@ func (p *Package) RunTests() error {
 	os.Setenv("GOPATH", p.Tmpdir)
 	for _, pkg := range p.Importers {
 		p.Passed[pkg] = false
-		fmt.Println("+++ Running tests for", pkg, "+++")
-		fmt.Println()
-		fmt.Println("> go get -v", pkg)
-		fmt.Println()
 		c := exec.Command("go", "get", "-v", pkg)
-		c.Stderr = os.Stderr
-		c.Stdout = os.Stdout
+		if p.Verbose {
+			fmt.Println("+++ Running tests for", pkg, "+++")
+			fmt.Println()
+			fmt.Println("> go get -v", pkg)
+			fmt.Println()
+			c.Stderr = os.Stderr
+			c.Stdout = os.Stdout
+		}
 		err := c.Run()
 		if err != nil {
 			continue
 		}
-		fmt.Println("> go test -v", pkg)
-		fmt.Println()
 		c = exec.Command("go", "test", "-v", pkg)
-		c.Stderr = os.Stderr
-		c.Stdout = os.Stdout
+		if p.Verbose {
+			fmt.Println()
+			fmt.Println("> go test -v", pkg)
+			fmt.Println()
+			c.Stderr = os.Stderr
+			c.Stdout = os.Stdout
+		}
 		err = c.Run()
 		if err != nil {
 			continue

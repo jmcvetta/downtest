@@ -11,19 +11,23 @@ import (
 	"fmt"
 	"github.com/jmcvetta/downtest"
 	"log"
+	"os"
 	"sort"
 )
 
 func main() {
 	log.SetFlags(log.Lshortfile)
+	verbose := flag.Bool("v", false, "Verbose output")
 	flag.Parse()
 	if flag.NArg() != 1 {
-		log.Fatal("Must specify an import path as an argument")
+		fmt.Fprintln(os.Stderr, "Must specify an import path as an argument.")
+		os.Exit(-1)
 	}
 	p, err := downtest.NewPackage(flag.Args()[0])
 	if err != nil {
 		log.Fatal(err)
 	}
+	p.Verbose = *verbose
 	err = p.RunTests()
 	if err != nil {
 		log.Fatal(err)
@@ -35,9 +39,10 @@ func main() {
 			fail++
 		}
 	}
-	fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 	fmt.Println()
-	fmt.Printf("Passed %d / %d downstream tests.\n", total-fail, total)
+	fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+	fmt.Println()
+	fmt.Printf("Passed %d / %d downstream tests:\n", total-fail, total)
 	fmt.Println()
 	packages := p.Importers
 	sort.Strings(packages)
@@ -48,6 +53,6 @@ func main() {
 		} else {
 			status = "FAIL"
 		}
-		fmt.Printf("%s \t %s\n", pkg, status)
+		fmt.Printf("%s  %s\n", status, pkg)
 	}
 }
