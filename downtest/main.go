@@ -27,6 +27,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if len(p.Importers) == 0 {
+		fmt.Printf("Package %s is not imported by any known package.\n", p.ImportPath)
+		os.Exit(0)
+	}
 	p.Verbose = *verbose
 	err = p.RunTests()
 	if err != nil {
