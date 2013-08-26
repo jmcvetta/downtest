@@ -9,7 +9,6 @@ package downtest
 import (
 	"fmt"
 	"github.com/jmcvetta/restclient"
-	"io/ioutil"
 	"os"
 	"os/exec"
 )
@@ -32,7 +31,6 @@ type apiError struct {
 // A Package is a module of Go code identified by its import path.
 type Package struct {
 	ImportPath string
-	Tmpdir     string
 	Importers  []string
 	Passed     map[string]bool
 	Verbose    bool
@@ -44,13 +42,7 @@ func NewPackage(importPath string) (*Package, error) {
 	p := Package{
 		ImportPath: importPath,
 	}
-	dirName, err := ioutil.TempDir("", "downtest")
-	if err != nil {
-		return nil, err
-	}
-	defer os.RemoveAll(dirName)
-	p.Tmpdir = dirName
-	err = p.LookupImporters()
+	err := p.LookupImporters()
 	if err != nil {
 		return &p, err
 	}
@@ -84,7 +76,6 @@ func (p *Package) LookupImporters() error {
 }
 
 func (p *Package) RunTests() error {
-	os.Setenv("GOPATH", p.Tmpdir)
 	for _, pkg := range p.Importers {
 		p.Passed[pkg] = false
 		c := exec.Command("go", "get", "-v", pkg)
