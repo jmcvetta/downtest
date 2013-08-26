@@ -34,6 +34,8 @@ In the example above some tests are failing because they require an environment
 variable to be set.  You may need to setup the environment, databases, etc
 before running `downtest`.
 
+Tests are run in the context of the current `$GOPATH`.  
+
 
 ## Documentation
 
