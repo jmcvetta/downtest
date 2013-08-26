@@ -37,7 +37,7 @@ before running `downtest`.
 
 ## Documentation
 
-[Automatically generated API
+Automatically generated [API
 documentation](http://godoc.org/github.com/jmcvetta/downtest) for package
 `downtest` can be found at
 [GoDoc](http://godoc.org/github.com/jmcvetta/downtest) or [Go
