@@ -31,7 +31,8 @@ pass  github.com/postmaster/postmaster-go
 `downtest` knows nothing about the test requirements of downstream packages.
 In the example above some tests are failing because they require an environment
 variable to be set.  You may need to setup the environment, databases, etc
-before running `downtest`.
+before running `downtest`.  Use flag `-v` to see the output of the tests as
+they run.
 
 Tests are run in the context of the current `$GOPATH`.  
 
