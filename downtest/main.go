@@ -3,7 +3,7 @@
 // Resist intellectual serfdom - the ownership of ideas is akin to slavery.
 
 // Command line tool to run the tests on all downstream consumers of a
-// package, as known to GoDoc.org.
+// package.
 package main
 
 import (
