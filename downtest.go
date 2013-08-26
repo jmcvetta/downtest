@@ -8,6 +8,7 @@ package downtest
 
 import (
 	"fmt"
+	_ "github.com/bmizerany/assert" // Needed for tests
 	"github.com/jmcvetta/restclient"
 	"os"
 	"os/exec"
@@ -20,11 +21,13 @@ var apiUrl = "http://api.godoc.org/importers/"
 // run downtest's own tests.
 const downtestPackage = "github.com/jmcvetta/downtest"
 
+type importer struct {
+	Path     string
+	Synopsis string
+}
+
 type apiResponse struct {
-	Results []struct {
-		Path     string
-		Synopsis string
-	}
+	Results []importer
 }
 
 type apiError struct {
