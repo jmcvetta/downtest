@@ -18,7 +18,11 @@ var testApiResponse = apiResponse{
 	Results: []importer{
 		importer{
 			Path:     testImporterPath,
-			Synopsis: "foo bar baz",
+			Synopsis: "foo",
+		},
+		importer{
+			Path:     downtestPackage,
+			Synopsis: "bar",
 		},
 	},
 }
@@ -38,4 +42,10 @@ func TestLookupImporters(t *testing.T) {
 	}
 	assert.Equal(t, 1, len(p.Importers))
 	assert.Equal(t, testImporterPath, p.Importers[0])
+}
+
+func TestLookupImportersBadUrl(t *testing.T) {
+	apiUrl = "foo bar baz"
+	_, err := NewPackage("unimportant_package_name")
+	assert.NotEqual(t, nil, err)
 }
