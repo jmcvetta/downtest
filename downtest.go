@@ -16,6 +16,10 @@ import (
 
 var apiUrl = "http://api.godoc.org/importers/"
 
+// Import path of the downtest package - used to avoid having downtest
+// run downtest's own tests.
+const downtestPackage = "github.com/jmcvetta/downtest"
+
 type apiResponse struct {
 	Results []struct {
 		Path     string
@@ -72,6 +76,9 @@ func (p *Package) LookupImporters() error {
 		return err
 	}
 	for _, r := range res.Results {
+		if r.Path == downtestPackage {
+			continue // Don't test self
+		}
 		importers = append(importers, r.Path)
 	}
 	sort.Strings(importers)
