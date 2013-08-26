@@ -1,7 +1,8 @@
 downtest
 ========
 
-Run tests for the known downstream consumers of a [Go](http://golang.org) package.
+Run tests for the known downstream consumers of a [Go](http://golang.org)
+package.
 
 
 ## Status
@@ -19,13 +20,22 @@ $ downtest github.com/username/package # Import path of a Go package
 
 ## Documentation
 
-Automatically generated API documentation for package `downtest` can be found
-at [GoDoc](http://godoc.org/github.com/jmcvetta/downtest).  
+[Automatically generated API
+documentation](http://godoc.org/github.com/jmcvetta/downtest) for package
+`downtest` can be found at
+[GoDoc](http://godoc.org/github.com/jmcvetta/downtest) or [Go
+Walker](http://gowalker.org/github.com/jmcvetta/downtest).
 
-Options for the command line tool can be listed the usual way:
+Options for the command line tool can be listed with the standard help flag:
 
 ```bash
-$ downtest -?
+$ downtest -h
+Usage of downtest:
+downtest [options] import_path
+  (where import_path is the full import path of a Go package)
+  -j=false: JSON output
+  -u=true: Update on go get
+  -v=false: Verbose
 ```
 
 
