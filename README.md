@@ -6,7 +6,7 @@ Run tests for the known downstream consumers of a [Go](http://golang.org) packag
 
 # Status
 
-Early development.  Works okay.
+Early development.  Works okay.  Needs tests.
 
 
 # Usage
