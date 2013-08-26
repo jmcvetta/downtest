@@ -7,17 +7,30 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/jmcvetta/downtest"
 	"log"
 	"os"
-	"sort"
+	"time"
 )
+
+type pkgResult struct {
+	Package string
+	Passed  bool
+}
+
+type results struct {
+	Package   string
+	Timestamp time.Time
+	Importers []pkgResult
+}
 
 func main() {
 	log.SetFlags(log.Lshortfile)
-	verbose := flag.Bool("v", false, "Verbose output")
+	verbose := flag.Bool("v", false, "Verbose")
+	jsonOutput := flag.Bool("j", false, "JSON output")
 	flag.Parse()
 	if flag.NArg() != 1 {
 		fmt.Fprintln(os.Stderr, "Must specify an import path as an argument.")
@@ -43,21 +56,39 @@ func main() {
 			fail++
 		}
 	}
-	fmt.Println()
-	fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-	fmt.Println()
-	fmt.Printf("Passed %d / %d downstream tests:\n", total-fail, total)
-	fmt.Println()
-	packages := p.Importers
-	sort.Strings(packages)
-	for _, pkg := range packages {
-		var status string
-		if p.Passed[pkg] {
-			status = "pass"
-		} else {
-			status = "FAIL"
+	if *jsonOutput {
+		rs := results{
+			Package:   p.ImportPath,
+			Timestamp: time.Now(),
 		}
-		fmt.Printf("%s  %s\n", status, pkg)
+		for _, pkg := range p.Importers {
+			pr := pkgResult{
+				Package: pkg,
+				Passed:  p.Passed[pkg],
+			}
+			rs.Importers = append(rs.Importers, pr)
+		}
+		b, err := json.MarshalIndent(&rs, "", "\t")
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(string(b))
+
+	} else {
+		fmt.Println()
+		fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+		fmt.Println()
+		fmt.Printf("Passed %d / %d downstream tests:\n", total-fail, total)
+		fmt.Println()
+		for _, pkg := range p.Importers {
+			var status string
+			if p.Passed[pkg] {
+				status = "pass"
+			} else {
+				status = "FAIL"
+			}
+			fmt.Printf("%s  %s\n", status, pkg)
+		}
 	}
 	if fail != 0 {
 		os.Exit(1)
