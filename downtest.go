@@ -77,17 +77,18 @@ func (p *Package) LookupImporters() error {
 	return nil
 }
 
+// RunTests runs "go test" on downstream packages.
 func (p *Package) RunTests() error {
 	for _, pkg := range p.Importers {
 		p.Passed[pkg] = false
 		c := exec.Command("go", "get", "-u", "-v", pkg)
 		if p.Verbose {
-			fmt.Println("+++ Running tests for", pkg, "+++")
-			fmt.Println()
-			fmt.Println("> go get -v", pkg)
-			fmt.Println()
+			fmt.Fprintln(os.Stderr, "+++ Running tests for", pkg, "+++")
+			fmt.Fprintln(os.Stderr)
+			fmt.Fprintln(os.Stderr, "> go get -v", pkg)
+			fmt.Fprintln(os.Stderr)
 			c.Stderr = os.Stderr
-			c.Stdout = os.Stdout
+			c.Stdout = os.Stderr
 		}
 		err := c.Run()
 		if err != nil {
@@ -95,11 +96,11 @@ func (p *Package) RunTests() error {
 		}
 		c = exec.Command("go", "test", "-v", pkg)
 		if p.Verbose {
-			fmt.Println()
-			fmt.Println("> go test -v", pkg)
-			fmt.Println()
+			fmt.Fprintln(os.Stderr)
+			fmt.Fprintln(os.Stderr, "> go test -v", pkg)
+			fmt.Fprintln(os.Stderr)
 			c.Stderr = os.Stderr
-			c.Stdout = os.Stdout
+			c.Stdout = os.Stderr
 		}
 		err = c.Run()
 		if err != nil {
