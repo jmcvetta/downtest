@@ -4,6 +4,14 @@ downtest
 Run tests for the known downstream consumers of a [Go](http://golang.org)
 package.
 
+Given the import path of a Go package, `downtest` queries GoDoc.org for the
+list of all other packages known to import that package.  Each of these
+downstream consumer packages is tested by running `go get` then `go test`.
+
+When the tests are complete a summary of results is printed.  Optionally, the
+summary can be output as JSON.  If all tests passed, `downtest` quits with exit
+code 0; if there were any failures, it quits with exit code 1.
+
 
 ## Status
 
