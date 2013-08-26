@@ -20,7 +20,7 @@ $ downtest github.com/username/package # Import path of a Go package
 ## Documentation
 
 Automatically generated API documentation for package `downtest` can be found
-at [GoDoc](godoc.org/github.com/jmcvetta/downtest).  
+at [GoDoc](http://godoc.org/github.com/jmcvetta/downtest).  
 
 Options for the command line tool can be listed the usual way:
 
