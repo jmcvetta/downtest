@@ -15,7 +15,12 @@ code 0; if there were any failures, it quits with exit code 1.
 
 ## Status
 
-Early development.  Works okay.  Needs tests.
+[![Build Status](https://travis-ci.org/jmcvetta/downtest.png)](https://travis-ci.org/jmcvetta/downtest)
+[![Build Status](https://drone.io/github.com/jmcvetta/downtest/status.png)](https://drone.io/github.com/jmcvetta/downtest/latest)
+[![Coverage Status](https://coveralls.io/repos/jmcvetta/downtest/badge.png)](https://coveralls.io/r/jmcvetta/downtest)
+
+Works okay.  Needs more/better tests.  Please feel free to submit new tests
+and/or features via pull request!
 
 
 ## Usage
