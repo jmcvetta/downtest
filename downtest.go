@@ -11,6 +11,7 @@ import (
 	"github.com/jmcvetta/restclient"
 	"os"
 	"os/exec"
+	"sort"
 )
 
 var apiUrl = "http://api.godoc.org/importers/"
@@ -71,6 +72,7 @@ func (p *Package) LookupImporters() error {
 	for _, r := range res.Results {
 		importers = append(importers, r.Path)
 	}
+	sort.Strings(importers)
 	p.Importers = importers
 	return nil
 }
@@ -78,7 +80,7 @@ func (p *Package) LookupImporters() error {
 func (p *Package) RunTests() error {
 	for _, pkg := range p.Importers {
 		p.Passed[pkg] = false
-		c := exec.Command("go", "get", "-v", pkg)
+		c := exec.Command("go", "get", "-u", "-v", pkg)
 		if p.Verbose {
 			fmt.Println("+++ Running tests for", pkg, "+++")
 			fmt.Println()
