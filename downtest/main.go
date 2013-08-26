@@ -41,9 +41,9 @@ func main() {
 	// Command line flags
 	//
 	flag.Usage = usage
-	verbose := *flag.Bool("v", false, "Verbose")
-	jsonOutput := *flag.Bool("j", false, "JSON output")
-	update := *flag.Bool("u", true, `Update packages with "go get -u"`)
+	verbose := flag.Bool("v", false, "Verbose")
+	jsonOutput := flag.Bool("j", false, "JSON output")
+	update := flag.Bool("u", true, `Update packages with "go get -u"`)
 	flag.Parse()
 	if flag.NArg() != 1 {
 		fmt.Fprintln(os.Stderr, "Must specify an import path as an argument.")
@@ -60,8 +60,15 @@ func main() {
 		fmt.Printf("Package %s is not imported by any known package.\n", p.ImportPath)
 		os.Exit(0)
 	}
-	p.Verbose = verbose
-	p.Update = update
+	p.Verbose = *verbose
+	p.Update = *update
+	if *verbose {
+		fmt.Fprintln(os.Stderr, "Running tests for downstream packages:")
+		for _, pkg := range p.Importers {
+			fmt.Fprintf(os.Stderr, "\t%s\n", pkg)
+		}
+		fmt.Fprintln(os.Stderr)
+	}
 	err = p.RunTests()
 	if err != nil {
 		log.Fatal(err)
@@ -76,7 +83,7 @@ func main() {
 			fail++
 		}
 	}
-	if jsonOutput {
+	if *jsonOutput {
 		rs := results{
 			Package:   p.ImportPath,
 			Timestamp: time.Now(),
@@ -95,7 +102,7 @@ func main() {
 		fmt.Println(string(b))
 
 	} else {
-		if verbose {
+		if *verbose {
 			fmt.Println()
 			fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 		}
