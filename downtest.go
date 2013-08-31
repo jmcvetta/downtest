@@ -8,7 +8,6 @@ package downtest
 
 import (
 	"fmt"
-	_ "github.com/bmizerany/assert" // Needed for tests
 	"github.com/jmcvetta/restclient"
 	"os"
 	"os/exec"
