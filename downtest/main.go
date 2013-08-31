@@ -44,6 +44,7 @@ func main() {
 	verbose := flag.Bool("v", false, "Verbose")
 	jsonOutput := flag.Bool("j", false, "JSON output")
 	update := flag.Bool("u", true, `Update packages with "go get -u"`)
+	zero := flag.Bool("0", false, "Exit with code 0 even if downstream tests failed")
 	flag.Parse()
 	if flag.NArg() != 1 {
 		fmt.Fprintln(os.Stderr, "Must specify an import path as an argument.")
@@ -119,7 +120,7 @@ func main() {
 			fmt.Printf("%s  %s\n", status, pkg)
 		}
 	}
-	if fail != 0 {
+	if (fail != 0) && !*zero {
 		os.Exit(1)
 	}
 }
