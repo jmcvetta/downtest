@@ -8,3 +8,5 @@ notificaitons:
     recipients: jason.mcvetta@gmail.com
     on_success: change
     on_failure: always
+before_script:
+  - go get -v github.com/bmizerany/assert
