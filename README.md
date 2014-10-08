@@ -27,18 +27,25 @@ and/or features via pull request!
 
 ```bash
 $ go get github.com/jmcvetta/downtest/downtest
-$ downtest github.com/jmcvetta/restclient # Import path of any Go package
 
-Passed 6 / 8 downstream tests:
+$ downtest github.com/jmcvetta/napping
+Running tests...
+    github.com/GitbookIO/go-gitbook-api/client                               FAIL
+    github.com/Mischanix/jukebox-back                                        pass
+    github.com/anupcshan/neoism                                              pass
+    github.com/jmcvetta/napping/examples/github_auth_token                   pass
+    github.com/jmcvetta/napping/examples/httpbin                             pass
+    github.com/jmcvetta/neoism                                               pass
+    github.com/jmcvetta/rapportive                                           pass
+    github.com/jmcvetta/stormpath                                            FAIL
+    github.com/mostafah/mandrill                                             pass
+    github.com/pierot/mandrill                                               pass
+    github.com/piethis/cli/pie                                               pass
+    github.com/srom/neoism                                                   FAIL
+    github.com/wmluke/translate                                              FAIL
+    github.com/yookoala/restit                                               pass
 
-pass  github.com/apeacox/txtatus-cli
-FAIL  github.com/jmcvetta/heroku
-pass  github.com/jmcvetta/neo4j
-pass  github.com/jmcvetta/neoism
-pass  github.com/jmcvetta/srom/srom
-FAIL  github.com/jmcvetta/stormpath
-pass  github.com/mostafah/mandrill
-pass  github.com/postmaster/postmaster-go
+Passed 10 / 14 downstream tests.
 ```
 
 `downtest` knows nothing about the test requirements of downstream packages.

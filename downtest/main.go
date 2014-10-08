@@ -108,17 +108,19 @@ func main() {
 			fmt.Println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 		}
 		fmt.Println()
-		fmt.Printf("Passed %d / %d downstream tests:\n", total-fail, total)
+		fmt.Printf("Passed %d / %d downstream tests.\n", total-fail, total)
 		fmt.Println()
-		for _, pkg := range p.Importers {
-			var status string
-			if p.Passed[pkg] {
-				status = "pass"
-			} else {
-				status = "FAIL"
+		/*
+			for _, pkg := range p.Importers {
+				var status string
+				if p.Passed[pkg] {
+					status = "pass"
+				} else {
+					status = "FAIL"
+				}
+				fmt.Printf("%s  %s\n", status, pkg)
 			}
-			fmt.Printf("%s  %s\n", status, pkg)
-		}
+		*/
 	}
 	if (fail != 0) && !*zero {
 		os.Exit(1)

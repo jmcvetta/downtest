@@ -7,8 +7,9 @@
 package downtest
 
 import (
+	"errors"
 	"fmt"
-	"github.com/jmcvetta/restclient"
+	"github.com/jmcvetta/napping"
 	"os"
 	"os/exec"
 	"sort"
@@ -64,20 +65,23 @@ func NewPackage(importPath string) (*Package, error) {
 func (p *Package) LookupImporters() error {
 	url := apiUrl + p.ImportPath
 	var e apiError
-	var res apiResponse
+	var result apiResponse
 	var importers []string
-	rr := restclient.RequestResponse{
-		Url:            url,
-		Method:         "GET",
-		Result:         &res,
-		Error:          &e,
-		ExpectedStatus: 200,
+	req := napping.Request{
+		Url:    url,
+		Method: "GET",
+		Result: &result,
+		Error:  &e,
 	}
-	_, err := restclient.Do(&rr)
+	resp, err := napping.Send(&req)
 	if err != nil {
 		return err
 	}
-	for _, r := range res.Results {
+	if resp.Status() != 200 {
+		msg := fmt.Sprintf("Unexpected status from server: %d", resp.Status())
+		return errors.New(msg)
+	}
+	for _, r := range result.Results {
 		if r.Path == downtestPackage {
 			continue // Don't test self
 		}
@@ -90,7 +94,14 @@ func (p *Package) LookupImporters() error {
 
 // RunTests runs "go test" on downstream packages.
 func (p *Package) RunTests() error {
+	fmt.Println("Running tests...")
 	for _, pkg := range p.Importers {
+		// 80 char witdth
+		// 4 char indent
+		// 2 char spacing
+		// 4 char status
+		// = 70 char padding
+		fmt.Printf("    %-73s", pkg)
 		p.Passed[pkg] = false
 		var c *exec.Cmd
 		if p.Update {
@@ -108,6 +119,7 @@ func (p *Package) RunTests() error {
 		}
 		err := c.Run()
 		if err != nil {
+			fmt.Println("FAIL")
 			continue
 		}
 		c = exec.Command("go", "test", "-v", pkg)
@@ -120,8 +132,10 @@ func (p *Package) RunTests() error {
 		}
 		err = c.Run()
 		if err != nil {
+			fmt.Println("FAIL")
 			continue
 		}
+		fmt.Println("pass")
 		p.Passed[pkg] = true
 	}
 	return nil
