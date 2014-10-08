@@ -94,7 +94,6 @@ func (p *Package) LookupImporters() error {
 
 // RunTests runs "go test" on downstream packages.
 func (p *Package) RunTests() error {
-	fmt.Println("Running tests...")
 	for _, pkg := range p.Importers {
 		// 80 char witdth
 		// 4 char indent

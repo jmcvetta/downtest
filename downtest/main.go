@@ -70,6 +70,7 @@ func main() {
 		}
 		fmt.Fprintln(os.Stderr)
 	}
+	fmt.Println("Running \"go test\" on downstream packages...")
 	err = p.RunTests()
 	if err != nil {
 		log.Fatal(err)
